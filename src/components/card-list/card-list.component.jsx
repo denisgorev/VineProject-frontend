@@ -4,8 +4,8 @@ import { Container, Row, Button, Col } from "react-bootstrap";
 import "./card-list.styles.css";
 
 export const CardList = (props) => {
-	props.DCs.forEach((el) => console.log(el));
-
+	// props.DCs.forEach((el) => console.log(el));
+    props.DCs.reverse()
 	return (
 		<Container>
 			<Row>

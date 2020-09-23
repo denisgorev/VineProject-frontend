@@ -7,7 +7,7 @@ export const CardComp = (props) => {
     {console.log(props.DC)}
 	return (
         
-		<Col className='card-container'>
+		<Col align="center" xs={12} md={10} lg={6} className='card-container'>
         <Link style={{ color: 'inherit', textDecoration: 'none' }} to={`/${props.DC._id}/drink`}>
 			<Card style={{ width: "20rem", marginBottom: '2rem' }}>
 				<Card.Img variant='top' src={props.DC.photo} />

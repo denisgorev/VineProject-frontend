@@ -4,8 +4,9 @@ import DrinkPage from "./pages/drink-page/drink-page";
 import "./App.css";
 import SpecDrink from './pages/specific-drink/spec-drink.component.jsx'
 import NavbarElement from "./components/navbar/navbar.component.jsx";
+import InsertDrink from "./pages/insert-drink/insert-drink.component";
 
-const InsertPage = () => <h1>Введите напиток</h1>;
+
 
 function App() {
 	return (
@@ -16,7 +17,7 @@ function App() {
 					<DrinkPage />
 				</Route>
 				<Route exact path='/insert'>
-					<InsertPage />
+					<InsertDrink />
 				</Route>
                 <Route exact path='/:did/drink'>
 					<SpecDrink />
