@@ -2,6 +2,7 @@ import React from "react";
 import "./card.styles.css";
 import { Card, Col } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import {Redirect} from 'react-router-dom'
 
 export const CardComp = (props) => {
     {console.log(props.DC)}

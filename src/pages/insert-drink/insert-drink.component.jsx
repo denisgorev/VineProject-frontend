@@ -1,5 +1,7 @@
 import React from "react";
 import FromInput from "../../components/form-input/form-input.component";
+import { Redirect } from "react-router-dom";
+import { Form } from "react-bootstrap";
 import "./insert-drink.scss";
 
 class InsertDrink extends React.Component {
@@ -11,10 +13,11 @@ class InsertDrink extends React.Component {
 			alcoType: "",
 			country: "",
 			placeOfConsumption: "",
-			rate: '',
+			rate: "",
 			appetizer: "",
 			comment: "",
-			date: "",
+			
+			redirect: false,
 		};
 	}
 
@@ -28,41 +31,39 @@ class InsertDrink extends React.Component {
 	handleChangeOption = (event) => {
 		console.log(event.target.name);
 		const value = event.target.value;
-		event.target.name === 'alcoKind'
+		event.target.name === "alcoKind"
 			? this.setState({ alcoKind: value })
 			: this.setState({ alcoType: value });
 	};
 
 	handleSubmit = async (event) => {
-        // event.preventdefault();
-        try {
-            const response = await fetch('http://192.168.0.16:5000/api/drinks/', {
-              method: 'POST',
-              headers: { 'Content-type': 'application/json' },
-              body: JSON.stringify({
-                name: this.state.name,
-                alcoKind: this.state.alcoKind,
-                alcoType: this.state.alcoType,
-                country: this.state.country,
-                placeOfConsumption: this.state.placeOfConsumption,
-                rate: this.state.rate,
-                appetizer: this.state.appetizer,
-                comment: this.state.comment,
-                date: this.state.date,
-              }),
-            });
-            const responseData = await response.json();
-        if (!response.ok) {
-          console.log(responseData.message);
-        }
-        console.log(responseData);
-        
-       
-      } catch (err) {
-        console.log(err);
-        
-      }
-    
+		event.preventDefault();
+		try {
+			const response = await fetch("http://192.168.0.16:5000/api/drinks/", {
+				method: "POST",
+				headers: { "Content-type": "application/json" },
+				body: JSON.stringify({
+					name: this.state.name,
+					alcoKind: this.state.alcoKind,
+					alcoType: this.state.alcoType,
+					country: this.state.country,
+					placeOfConsumption: this.state.placeOfConsumption,
+					rate: this.state.rate,
+					appetizer: this.state.appetizer,
+					comment: this.state.comment,
+					
+				}),
+			});
+			const responseData = await response.json();
+			await this.setState({ redirect: true });
+			if (!response.ok) {
+				console.log(responseData.message);
+			}
+			console.log(responseData);
+		} catch (err) {
+			console.log(err);
+		}
+
 		// this.setState({
 		// 	name: "",
 		// 	alcoKind: "",
@@ -76,6 +77,12 @@ class InsertDrink extends React.Component {
 		// });
 	};
 	render() {
+		const { redirect } = this.state;
+		console.log(redirect);
+
+		if (redirect) {
+			return <Redirect to='/' />;
+		}
 		return (
 			<div className='insert-drink'>
 				Введите воспоминание
@@ -88,34 +95,69 @@ class InsertDrink extends React.Component {
 						label='Название пития'
 						required
 					/>
-					<select name='alcoKind' value={this.state.alcoKind} onChange={this.handleChangeOption}>
+					{/* <select name='alcoKind' value={this.state.alcoKind} onChange={this.handleChangeOption}>
 						<option value=''>Выберите тип напитка</option>
 						<option value='Вино'>Вино</option>
 						<option value='Пиво'>Пиво</option>
-					</select>
-                    <br></br>
-				
-                    {this.state.alcoKind === 'Вино' ? 
-					<select name='alcoType' value={this.state.alcoType} onChange={this.handleChangeOption}>
-						
-                        <option value=''>Выберите разновидность</option>
-						<option value='Белое сухое'>Белое сухое</option>
-						<option value='Красное сухое'>Красное сухое</option> 
-                    
-					</select> : 
-                    <select name='alcoType' value={this.state.alcoType} onChange={this.handleChangeOption}>
-						
-                        <option value=''>Выберите разновидность</option>
-						<option value='Пшеничное'>Пшеничное</option>
-						<option value='IPA'>IPA</option> 
-                    
-					</select>}
+					</select> */}
+
+					<Form.Control
+						name='alcoKind'
+						value={this.state.alcoKind}
+						onChange={this.handleChangeOption}
+						as='select'
+					>
+						<option value=''>Выберите тип напитка</option>
+						<option value='Вино'>Вино</option>
+						<option value='Пиво'>Пиво</option>
+					</Form.Control>
+
+					<br></br>
+
+					{
+						this.state.alcoKind === "Вино" ? (
+							<Form.Control
+								name='alcoType'
+								value={this.state.alcoType}
+								onChange={this.handleChangeOption}
+								as='select'
+							>
+								<option value=''>Выберите разновидность</option>
+								<option value='Белое сухое'>Белое сухое</option>
+								<option value='Красное сухое'>Красное сухое</option>
+							</Form.Control>
+						) : (
+							<Form.Control
+								name='alcoType'
+								value={this.state.alcoType}
+								onChange={this.handleChangeOption}
+								as='select'
+							>
+								<option value=''>Выберите разновидность</option>
+								<option value='Пшеничное'>Пшеничное</option>
+								<option value='IPA'>IPA</option>
+							</Form.Control>
+						)
+						/* {this.state.alcoKind === "Вино" ? (
+						<select name='alcoType' value={this.state.alcoType} onChange={this.handleChangeOption}>
+							<option value=''>Выберите разновидность</option>
+							<option value='Белое сухое'>Белое сухое</option>
+							<option value='Красное сухое'>Красное сухое</option>
+						</select>
+					) : (
+						<select name='alcoType' value={this.state.alcoType} onChange={this.handleChangeOption}>
+							<option value=''>Выберите разновидность</option>
+							<option value='Пшеничное'>Пшеничное</option>
+							<option value='IPA'>IPA</option>
+						</select>
+					)} */
+					}
 
 					<FromInput
 						name='country'
 						type='text'
 						value={this.state.country}
-                        label='Сраны производитель'
+						label='Сраны производитель'
 						handleChange={this.handleChange}
 						required
 					/>
@@ -123,7 +165,7 @@ class InsertDrink extends React.Component {
 						name='placeOfConsumption'
 						type='text'
 						value={this.state.placeOfConsumption}
-                        label='Где вы сейчас?'
+						label='Где вы сейчас?'
 						handleChange={this.handleChange}
 						required
 					/>
@@ -131,7 +173,7 @@ class InsertDrink extends React.Component {
 						name='rate'
 						type='text'
 						value={this.state.rate}
-                        label='Оценка от 1 до 10'
+						label='Оценка от 1 до 10'
 						handleChange={this.handleChange}
 						required
 					/>
@@ -140,25 +182,17 @@ class InsertDrink extends React.Component {
 						type='text'
 						value={this.state.appetizer}
 						handleChange={this.handleChange}
-                        label='Чем закусывали?'
-						
+						label='Чем закусывали?'
 					/>
 					<FromInput
 						name='comment'
 						type='text'
 						value={this.state.comment}
 						handleChange={this.handleChange}
-                        label='Будут ли комментарии?'
+						label='Будут ли комментарии?'
 						required
 					/>
-					<FromInput
-						name='date'
-						type='text'
-						value={this.state.date}
-						handleChange={this.handleChange}
-                        label='Сегодняшнее число'
-						required
-					/>
+					
 					<input type='submit' />
 				</form>
 			</div>
