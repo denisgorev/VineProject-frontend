@@ -3,6 +3,9 @@ import FromInput from "../../components/form-input/form-input.component";
 import { Redirect } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import "./insert-drink.scss";
+import ReactImageUploadComponent from "react-images-upload";
+import ImageUpload from "../../components/image-upload/image-upload.component";
+import axios from "axios";
 
 class InsertDrink extends React.Component {
 	constructor() {
@@ -16,7 +19,7 @@ class InsertDrink extends React.Component {
 			rate: "",
 			appetizer: "",
 			comment: "",
-			
+			photo: "",
 			redirect: false,
 		};
 	}
@@ -36,23 +39,39 @@ class InsertDrink extends React.Component {
 			: this.setState({ alcoType: value });
 	};
 
+	handlePhotoUpload = (photo) => {
+		this.setState({ photo: photo }, ()=>console.log(this.state.photo));
+	};
+
 	handleSubmit = async (event) => {
-		event.preventDefault();
-		try {
+		
+        event.preventDefault();
+   		try {
+            const formData = new FormData();
+            formData.append("name", this.state.name);
+            formData.append("alcoKind", this.state.alcoKind);
+            formData.append("alcoType", this.state.alcoType);
+            formData.append("country", this.state.country);
+            formData.append("placeOfConsumption", this.state.placeOfConsumption);
+            formData.append("rate", this.state.rate);
+            formData.append("comment", this.state.comment);
+            formData.append("photo", this.state.photo);
+            
 			const response = await fetch("http://192.168.0.16:5000/api/drinks/", {
-				method: "POST",
-				headers: { "Content-type": "application/json" },
-				body: JSON.stringify({
-					name: this.state.name,
-					alcoKind: this.state.alcoKind,
-					alcoType: this.state.alcoType,
-					country: this.state.country,
-					placeOfConsumption: this.state.placeOfConsumption,
-					rate: this.state.rate,
-					appetizer: this.state.appetizer,
-					comment: this.state.comment,
-					
-				}),
+                method: "POST",
+                
+				// headers: { "Content-type": "application/json" },
+                body: formData
+                // body: JSON.stringify({
+				// 	name: this.state.name,
+				// 	alcoKind: this.state.alcoKind,
+				// 	alcoType: this.state.alcoType,
+				// 	country: this.state.country,
+				// 	placeOfConsumption: this.state.placeOfConsumption,
+				// 	rate: this.state.rate,
+				// 	appetizer: this.state.appetizer,
+				// 	comment: this.state.comment,
+				// }),
 			});
 			const responseData = await response.json();
 			await this.setState({ redirect: true });
@@ -95,12 +114,7 @@ class InsertDrink extends React.Component {
 						label='Название пития'
 						required
 					/>
-					{/* <select name='alcoKind' value={this.state.alcoKind} onChange={this.handleChangeOption}>
-						<option value=''>Выберите тип напитка</option>
-						<option value='Вино'>Вино</option>
-						<option value='Пиво'>Пиво</option>
-					</select> */}
-
+				
 					<Form.Control
 						name='alcoKind'
 						value={this.state.alcoKind}
@@ -138,19 +152,7 @@ class InsertDrink extends React.Component {
 								<option value='IPA'>IPA</option>
 							</Form.Control>
 						)
-						/* {this.state.alcoKind === "Вино" ? (
-						<select name='alcoType' value={this.state.alcoType} onChange={this.handleChangeOption}>
-							<option value=''>Выберите разновидность</option>
-							<option value='Белое сухое'>Белое сухое</option>
-							<option value='Красное сухое'>Красное сухое</option>
-						</select>
-					) : (
-						<select name='alcoType' value={this.state.alcoType} onChange={this.handleChangeOption}>
-							<option value=''>Выберите разновидность</option>
-							<option value='Пшеничное'>Пшеничное</option>
-							<option value='IPA'>IPA</option>
-						</select>
-					)} */
+						
 					}
 
 					<FromInput
@@ -192,7 +194,9 @@ class InsertDrink extends React.Component {
 						label='Будут ли комментарии?'
 						required
 					/>
-					
+
+					<ImageUpload withPreview withIcon onInput={this.handlePhotoUpload} />
+
 					<input type='submit' />
 				</form>
 			</div>

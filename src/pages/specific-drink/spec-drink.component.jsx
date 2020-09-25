@@ -48,7 +48,7 @@ class SpecDrink extends React.Component {
 		return (
 			<div align='center'>
 				<Card style={{ width: "18rem" }}>
-					<Card.Img variant='top' src={this.state.drink.photo} />
+					<Card.Img height={270} variant='top' src={this.state.drink.photo} />
 					<Card.Body>
 						<Card.Title>{drinkName}</Card.Title>
 						<div align='left'>
@@ -59,7 +59,7 @@ class SpecDrink extends React.Component {
 							<Card.Text>Комментарий: {comment}</Card.Text>
 						</div>
 
-						<Button onClick={this.deleteHandle} variant='dark'>
+						<Button className='button' onClick={this.deleteHandle} variant='dark'>
 							Удалить
 						</Button>
 					</Card.Body>
