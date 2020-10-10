@@ -1,16 +1,17 @@
 import React from "react";
+import { connect } from "react-redux";
 import FromInput from "../../components/form-input/form-input.component";
 import { Redirect } from "react-router-dom";
-import { Form } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import "./insert-drink.scss";
-import ReactImageUploadComponent from "react-images-upload";
 import ImageUpload from "../../components/image-upload/image-upload.component";
-import axios from "axios";
+
 
 class InsertDrink extends React.Component {
-	constructor() {
+	constructor({ currentUser }) {
 		super();
 		this.state = {
+            
 			name: "",
 			alcoKind: "",
 			alcoType: "",
@@ -25,10 +26,11 @@ class InsertDrink extends React.Component {
 	}
 
 	handleChange = (event) => {
-		console.log(event.target.name);
+		// console.log(event.target.name);
 		const { name, value } = event.target;
 		this.setState({ [name]: value });
-		console.log(this.state);
+        console.log(this.state);
+        // console.log(this.props.currentUser)
 	};
 
 	handleChangeOption = (event) => {
@@ -40,29 +42,30 @@ class InsertDrink extends React.Component {
 	};
 
 	handlePhotoUpload = (photo) => {
-		this.setState({ photo: photo }, ()=>console.log(this.state.photo));
+		this.setState({ photo: photo }, () => console.log(this.state.photo));
 	};
 
 	handleSubmit = async (event) => {
-		
-        event.preventDefault();
-   		try {
+		event.preventDefault();
+		try {
             const formData = new FormData();
-            formData.append("name", this.state.name);
-            formData.append("alcoKind", this.state.alcoKind);
-            formData.append("alcoType", this.state.alcoType);
-            formData.append("country", this.state.country);
-            formData.append("placeOfConsumption", this.state.placeOfConsumption);
-            formData.append("rate", this.state.rate);
-            formData.append("comment", this.state.comment);
-            formData.append("photo", this.state.photo);
-            
+            // console.log(this.props.currentUser.id)
+            formData.append("user", this.props.currentUser.id);
+			formData.append("name", this.state.name);
+			formData.append("alcoKind", this.state.alcoKind);
+			formData.append("alcoType", this.state.alcoType);
+			formData.append("country", this.state.country);
+			formData.append("placeOfConsumption", this.state.placeOfConsumption);
+			formData.append("rate", this.state.rate);
+			formData.append("comment", this.state.comment);
+			formData.append("photo", this.state.photo);
+
 			const response = await fetch("http://192.168.0.16:5000/api/drinks/", {
-                method: "POST",
-                
+				method: "POST",
+
 				// headers: { "Content-type": "application/json" },
-                body: formData
-                // body: JSON.stringify({
+				body: formData,
+				// body: JSON.stringify({
 				// 	name: this.state.name,
 				// 	alcoKind: this.state.alcoKind,
 				// 	alcoType: this.state.alcoType,
@@ -76,24 +79,14 @@ class InsertDrink extends React.Component {
 			const responseData = await response.json();
 			await this.setState({ redirect: true });
 			if (!response.ok) {
-				console.log(responseData.message);
+                console.log(responseData.message);
+                
 			}
-			console.log(responseData);
+            // console.log(responseData);
+            // console.log(this.props.currentUser)
 		} catch (err) {
 			console.log(err);
 		}
-
-		// this.setState({
-		// 	name: "",
-		// 	alcoKind: "",
-		// 	alcoType: "",
-		// 	country: "",
-		// 	placeOfConsumption: "",
-		// 	rate: '',
-		// 	appetizer: "",
-		// 	comment: "",
-		// 	date: "",
-		// });
 	};
 	render() {
 		const { redirect } = this.state;
@@ -101,7 +94,8 @@ class InsertDrink extends React.Component {
 
 		if (redirect) {
 			return <Redirect to='/' />;
-		}
+        }
+        
 		return (
 			<div className='insert-drink'>
 				Введите воспоминание
@@ -114,7 +108,7 @@ class InsertDrink extends React.Component {
 						label='Название пития'
 						required
 					/>
-				
+
 					<Form.Control
 						name='alcoKind'
 						value={this.state.alcoKind}
@@ -128,38 +122,35 @@ class InsertDrink extends React.Component {
 
 					<br></br>
 
-					{
-						this.state.alcoKind === "Вино" ? (
-							<Form.Control
-								name='alcoType'
-								value={this.state.alcoType}
-								onChange={this.handleChangeOption}
-								as='select'
-							>
-								<option value=''>Выберите разновидность</option>
-								<option value='Белое сухое'>Белое сухое</option>
-								<option value='Красное сухое'>Красное сухое</option>
-							</Form.Control>
-						) : (
-							<Form.Control
-								name='alcoType'
-								value={this.state.alcoType}
-								onChange={this.handleChangeOption}
-								as='select'
-							>
-								<option value=''>Выберите разновидность</option>
-								<option value='Пшеничное'>Пшеничное</option>
-								<option value='IPA'>IPA</option>
-							</Form.Control>
-						)
-						
-					}
+					{this.state.alcoKind === "Вино" ? (
+						<Form.Control
+							name='alcoType'
+							value={this.state.alcoType}
+							onChange={this.handleChangeOption}
+							as='select'
+						>
+							<option value=''>Выберите разновидность</option>
+							<option value='Белое сухое'>Белое сухое</option>
+							<option value='Красное сухое'>Красное сухое</option>
+						</Form.Control>
+					) : (
+						<Form.Control
+							name='alcoType'
+							value={this.state.alcoType}
+							onChange={this.handleChangeOption}
+							as='select'
+						>
+							<option value=''>Выберите разновидность</option>
+							<option value='Пшеничное'>Пшеничное</option>
+							<option value='IPA'>IPA</option>
+						</Form.Control>
+					)}
 
 					<FromInput
 						name='country'
 						type='text'
 						value={this.state.country}
-						label='Сраны производитель'
+						label='Страна производитель'
 						handleChange={this.handleChange}
 						required
 					/>
@@ -196,12 +187,18 @@ class InsertDrink extends React.Component {
 					/>
 
 					<ImageUpload withPreview withIcon onInput={this.handlePhotoUpload} />
-
-					<input type='submit' />
+                    <Button className='button' style={{marginBottom: '5%'}} type='submit' variant="secondary">Подтвердить</Button>
+					
 				</form>
 			</div>
 		);
 	}
 }
 
-export default InsertDrink;
+const mapStateToProps = (state) => ({
+	currentUser: state.user.currentUser,
+});
+
+
+export default connect(mapStateToProps)(InsertDrink);
+

@@ -47,8 +47,8 @@ class SpecDrink extends React.Component {
 
 		return (
 			<div align='center'>
-				<Card style={{ width: "18rem" }}>
-					<Card.Img height={270} variant='top' src={this.state.drink.photo} />
+				<Card style={{ width: "16rem" }}>
+					<Card.Img height={260} variant='top' src={this.state.drink.photo} />
 					<Card.Body>
 						<Card.Title>{drinkName}</Card.Title>
 						<div align='left'>
